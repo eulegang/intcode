@@ -1,0 +1,11 @@
+CompileFlags:
+  Add: 
+  - "-xc++"
+  - "-Wall"
+  Remove: [-W*]
+  Compiler: clang++
+
+Diagnostics:
+  ClangTidy:
+    Add: modernize*
+    Remove: modernize-use-trailing-return-type
