@@ -7,6 +7,8 @@ struct Program {
 
   Program(char *filename);
   Program(std::initializer_list<long> li);
+  Program(Program &program) = default;
+  Program &operator=(Program &) = default;
 
   Program(Program &&) = delete;
   Program &operator=(Program &&) = delete;

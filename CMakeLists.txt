@@ -4,6 +4,12 @@ project(intcode LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option(TRACE_OPERATIONS "Adding tracing for operations" OFF)
+
+if(TRACE_OPERATIONS)
+  add_definitions(-DTRACE_OPS)
+endif()
+
 include(FetchContent)
 FetchContent_Declare(
   googletest
@@ -18,6 +24,9 @@ add_library(intcode STATIC src/intcode/prog.cpp src/intcode/interp.cpp)
 
 add_executable(day2a src/day2/main.a.cpp)
 target_link_libraries(day2a PRIVATE intcode)
+
+add_executable(day2b src/day2/main.b.cpp)
+target_link_libraries(day2b PRIVATE intcode)
 
 enable_testing()
 

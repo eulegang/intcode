@@ -48,7 +48,7 @@ void IntCode::Interp::Interp::run() {
 }
 
 void handle_add(Program &program, long a, long b, long res) {
-#ifndef NDEBUG
+#ifdef TRACE_OPS
   std::cout << std::format("add({}, {}, {})", a, b, res) << std::endl;
 #endif
 
@@ -56,7 +56,7 @@ void handle_add(Program &program, long a, long b, long res) {
 }
 
 void handle_mult(Program &program, long a, long b, long res) {
-#ifndef NDEBUG
+#ifdef TRACE_OPS
   std::cout << std::format("mult({}, {}, {}))", a, b, res) << std::endl;
 #endif
   program[res] = program[a] * program[b];
