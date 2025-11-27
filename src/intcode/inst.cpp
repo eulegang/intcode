@@ -35,7 +35,7 @@ IntCode::Inst::Inst(long code)
       second{validate_mode((code / 1000) % 10)},
       third{validate_mode((code / 10000) % 10)} {}
 
-std::size_t IntCode::Inst::param_size() {
+std::size_t IntCode::Inst::param_size() const {
   switch (this->operation) {
   case Operation::Add:
   case Operation::Mult:

@@ -14,8 +14,10 @@ struct Program {
   Program &operator=(Program &&) = delete;
 
   long &operator[](size_t pos);
-  long get(size_t pos);
-  size_t size();
+  [[nodiscard]]
+  long get(size_t pos) const;
+  [[nodiscard]]
+  size_t size() const;
 };
 
 struct Interp {

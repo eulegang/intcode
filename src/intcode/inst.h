@@ -21,7 +21,7 @@ struct Inst {
 
   Inst(long code);
 
-  std::size_t param_size();
+  [[nodiscard]] std::size_t param_size() const;
 };
 
 } // namespace IntCode

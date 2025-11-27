@@ -19,9 +19,9 @@ void Interp::Interp::run() {
   size_t pc{};
 
   while (true) {
-    Inst inst(program[pc]);
+    const Inst inst(program[pc]);
+    const size_t len = inst.param_size() + 1;
 
-    size_t len = inst.param_size() + 1;
     if (program.size() < pc + len) {
       throw new std::runtime_error("invalid instruction pack");
     }
