@@ -57,6 +57,10 @@ IntCode::Program::Program(char *filename) : contents{} {
 }
 
 long &IntCode::Program::operator[](size_t pos) { return contents[pos]; }
+long IntCode::Program::get(size_t pos) {
+  return pos < contents.size() ? contents[pos] : 0;
+}
+
 size_t IntCode::Program::size() { return contents.size(); }
 
 std::ostream &IntCode::operator<<(std::ostream &out,

@@ -6,14 +6,16 @@
 #include <iostream>
 #include <stdexcept>
 
-using Program = IntCode::Program;
+using namespace IntCode;
 
-void handle_add(Program &program, long a, long b, long res);
-void handle_mult(Program &program, long a, long b, long res);
+using Handler = void (*)(Program &, const Inst &, const std::array<long, 3> &);
 
-IntCode::Interp::Interp(IntCode::Program &program) : program{program} {}
+void handle_add(Program &program, const Inst &, const std::array<long, 3> &);
+void handle_mult(Program &program, const Inst &, const std::array<long, 3> &);
 
-void IntCode::Interp::Interp::run() {
+Interp::Interp(Program &program) : program{program} {}
+
+void Interp::Interp::run() {
   size_t pc{};
 
   while (true) {
@@ -24,24 +26,31 @@ void IntCode::Interp::Interp::run() {
       throw new std::runtime_error("invalid instruction pack");
     }
 
+    Handler handler;
+    const std::array<long, 3> params{program.get(pc + 1), program.get(pc + 2),
+                                     program.get(pc + 3)};
     switch (inst.operation) {
     case Operation::Add:
-      handle_add(program, program[pc + 1], program[pc + 2], program[pc + 3]);
+      handler = &handle_add;
       break;
 
     case Operation::Mult:
-      handle_mult(program, program[pc + 1], program[pc + 2], program[pc + 3]);
+      handler = &handle_mult;
       break;
 
     case Operation::Quit:
       return;
     }
 
+    handler(program, inst, params);
+
     pc += inst.param_size() + 1;
   }
 }
 
-void handle_add(Program &program, long a, long b, long res) {
+void handle_add(Program &program, const Inst &inst,
+                const std::array<long, 3> &params) {
+  auto [a, b, res] = params;
 #ifdef TRACE_OPS
   std::cout << std::format("add({}, {}, {})", a, b, res) << std::endl;
 #endif
@@ -49,7 +58,9 @@ void handle_add(Program &program, long a, long b, long res) {
   program[res] = program[a] + program[b];
 }
 
-void handle_mult(Program &program, long a, long b, long res) {
+void handle_mult(Program &program, const Inst &inst,
+                 const std::array<long, 3> &params) {
+  auto [a, b, res] = params;
 #ifdef TRACE_OPS
   std::cout << std::format("mult({}, {}, {}))", a, b, res) << std::endl;
 #endif

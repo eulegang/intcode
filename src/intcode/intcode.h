@@ -14,6 +14,7 @@ struct Program {
   Program &operator=(Program &&) = delete;
 
   long &operator[](size_t pos);
+  long get(size_t pos);
   size_t size();
 };
 
