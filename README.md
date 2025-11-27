@@ -5,7 +5,7 @@ This is an implementation of the intcode computer from [Advent of Code](https://
 
 # Progress
 
-- [ ] [Gravity Assist](https://adventofcode.com/2019/day/2)
+- [x] [Gravity Assist](https://adventofcode.com/2019/day/2)
 - [ ] [Thermal Environment Supervision Terminal (TEST)](https://adventofcode.com/2019/day/5)
 - [ ] [Amplification Circuit](https://adventofcode.com/2019/day/7)
 - [ ] [Basic Operation Of System Test (BOOST)](https://adventofcode.com/2019/day/9)
