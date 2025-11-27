@@ -10,17 +10,11 @@ if(TRACE_OPERATIONS)
   add_definitions(-DTRACE_OPS)
 endif()
 
-include(FetchContent)
-FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
-)
-
-FetchContent_MakeAvailable(googletest)
-
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/intcode/)
 
-add_library(intcode STATIC src/intcode/prog.cpp src/intcode/interp.cpp)
+
+file(GLOB INTCODE_SRC "src/intcode/*.cpp")
+add_library(intcode STATIC ${INTCODE_SRC})
 
 add_executable(day2a src/day2/main.a.cpp)
 target_link_libraries(day2a PRIVATE intcode)
@@ -28,11 +22,22 @@ target_link_libraries(day2a PRIVATE intcode)
 add_executable(day2b src/day2/main.b.cpp)
 target_link_libraries(day2b PRIVATE intcode)
 
+# TESTING
+
+file(GLOB TEST_SRC "tests/*.cpp")
+
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+)
+FetchContent_MakeAvailable(googletest)
+
 enable_testing()
 
 add_executable(
   tests
-  tests/intcode.cpp
+  ${TEST_SRC}
 )
 target_link_libraries(
   tests
