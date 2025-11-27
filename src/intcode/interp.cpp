@@ -3,14 +3,18 @@
 #include <iostream>
 #include <stdexcept>
 
+using Program = IntCode::Program;
+
 size_t param_size(long code);
 
 enum Inst {
   InstAdd = 1,
   InstMult = 2,
   InstQuit = 99,
-
 };
+
+void handle_add(Program &program, long a, long b, long res);
+void handle_mult(Program &program, long a, long b, long res);
 
 IntCode::Interp::Interp(IntCode::Program &program) : program{program} {}
 
@@ -30,11 +34,11 @@ void IntCode::Interp::Interp::run() {
 
     switch (code) {
     case InstAdd:
-      handle_add(program[pc + 1], program[pc + 2], program[pc + 3]);
+      handle_add(program, program[pc + 1], program[pc + 2], program[pc + 3]);
       break;
 
     case InstMult:
-      handle_mult(program[pc + 1], program[pc + 2], program[pc + 3]);
+      handle_mult(program, program[pc + 1], program[pc + 2], program[pc + 3]);
       break;
     }
 
@@ -42,13 +46,14 @@ void IntCode::Interp::Interp::run() {
   }
 }
 
-void IntCode::Interp::handle_add(long a, long b, long res) {
+void handle_add(Program &program, long a, long b, long res) {
 #ifndef NDEBUG
   std::cout << "add(" << a << ", " << b << ", " << res << ")" << std::endl;
 #endif
   program[res] = program[a] + program[b];
 }
-void IntCode::Interp::handle_mult(long a, long b, long res) {
+
+void handle_mult(Program &program, long a, long b, long res) {
 #ifndef NDEBUG
   std::cout << "mult(" << a << ", " << b << ", " << res << ")" << std::endl;
 #endif

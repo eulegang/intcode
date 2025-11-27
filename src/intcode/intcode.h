@@ -15,11 +15,7 @@ struct Program {
   size_t size();
 };
 
-class Interp {
-  void handle_add(long a, long b, long res);
-  void handle_mult(long a, long b, long res);
-
-public:
+struct Interp {
   Program &program;
 
   Interp(Program &program);
