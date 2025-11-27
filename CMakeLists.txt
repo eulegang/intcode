@@ -12,9 +12,11 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
-add_library(intcode STATIC src/intcode/lib.cxx)
-add_executable(day2a src/day2/main.a.cxx)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/intcode/)
 
+add_library(intcode STATIC src/intcode/prog.cpp src/intcode/interp.cpp)
+
+add_executable(day2a src/day2/main.a.cpp)
 target_link_libraries(day2a PRIVATE intcode)
 
 enable_testing()

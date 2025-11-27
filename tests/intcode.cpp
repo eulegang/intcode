@@ -1,4 +1,4 @@
-#include "../src/intcode/lib.h"
+#include "intcode.h"
 #include <gtest/gtest.h>
 
 TEST(IntCode, Load) {
