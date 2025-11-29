@@ -1,4 +1,5 @@
 #include "inst.h"
+#include "color.h"
 
 #include <array>
 #include <stdexcept>
@@ -6,9 +7,8 @@
 using namespace IntCode;
 
 Operation validate_operation(long code) {
-  static std::array all{Operation::Add,      Operation::Mult,
-                        Operation::Input,    Operation::Output,
-                        Operation::JumpTrue, Operation::Quit};
+  static std::array all{Operation::Add, Operation::Mult, Operation::Input,
+                        Operation::Output, Operation::Quit};
 
   for (Operation i : all) {
     if (static_cast<long>(i) == code)
@@ -53,9 +53,9 @@ std::size_t IntCode::Inst::param_size() const {
 std::ostream &print_param(std::ostream &out, long param, Mode mode) {
   switch (mode) {
   case Mode::Position:
-    return out << "\x1b[0;35m" << "*" << param << "";
+    return out << Color::purple << "*" << param << "";
   case Mode::Immediate:
-    return out << "\x1b[0;33m" << param;
+    return out << Color::yellow << param;
   }
 
   throw std::runtime_error("invalid mode");
@@ -76,14 +76,14 @@ IntCode::operator<<(std::ostream &out,
     break;
   case 2:
     print_param(out, params[0], inst.first);
-    out << "\x1b[0;36m, ";
+    out << Color::cyan << ", ";
     print_param(out, params[1], inst.second);
     break;
   case 3:
     print_param(out, params[0], inst.first);
-    out << "\x1b[0;36m, ";
+    out << Color::cyan << ", ";
     print_param(out, params[1], inst.second);
-    out << "\x1b[0;36m, ";
+    out << Color::cyan << ", ";
     print_param(out, params[2], inst.third);
     break;
   }

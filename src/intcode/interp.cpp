@@ -1,3 +1,4 @@
+#include "color.h"
 #include "inst.h"
 #include "intcode.h"
 
@@ -56,7 +57,7 @@ void Interp::Interp::run() {
     }
 
     if (trace) {
-      std::cout << "\x1b[0;36m" << make_pair(inst, params) << "\x1b[0m"
+      std::cout << Color::cyan << make_pair(inst, params) << Color::clear
                 << std::endl;
     }
 

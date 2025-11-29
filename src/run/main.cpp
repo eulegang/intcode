@@ -1,19 +1,27 @@
+#include "color.h"
 #include "intcode.h"
+
 #include <iostream>
 #include <unistd.h>
 
 int main(int argc, char *argv[]) {
   char *filename = nullptr;
   bool trace = false;
+  bool no_color = false;
   int opt;
 
-  while ((opt = getopt(argc, argv, "tf:")) != -1) {
+  while ((opt = getopt(argc, argv, "tf:C")) != -1) {
     switch (opt) {
     case 't':
       trace = true;
       break;
+
     case 'f':
       filename = optarg;
+      break;
+
+    case 'C':
+      no_color = true;
       break;
 
     case '?':
@@ -27,6 +35,11 @@ int main(int argc, char *argv[]) {
               << std::endl;
 
     return 1;
+  }
+
+  if (!no_color) {
+    std::cout << "enabling";
+    std::cout << Color::enable;
   }
 
   IntCode::Program prog(filename);
