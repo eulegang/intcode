@@ -6,9 +6,9 @@
 using namespace IntCode;
 
 Operation validate_operation(long code) {
-  static std::array<Operation, 5> all{Operation::Add, Operation::Mult,
-                                      Operation::Input, Operation::Output,
-                                      Operation::Quit};
+  static std::array all{Operation::Add,      Operation::Mult,
+                        Operation::Input,    Operation::Output,
+                        Operation::JumpTrue, Operation::Quit};
 
   for (Operation i : all) {
     if (static_cast<long>(i) == code)
@@ -19,7 +19,7 @@ Operation validate_operation(long code) {
 }
 
 Mode validate_mode(long code) {
-  static std::array<Mode, 3> all{Mode::Position, Mode::Immediate};
+  static std::array all{Mode::Position, Mode::Immediate};
 
   for (Mode i : all) {
     if (static_cast<long>(i) == code)
