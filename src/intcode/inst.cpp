@@ -53,9 +53,9 @@ std::size_t IntCode::Inst::param_size() const {
 std::ostream &print_param(std::ostream &out, long param, Mode mode) {
   switch (mode) {
   case Mode::Position:
-    return out << "prog[" << param << "]";
+    return out << "\x1b[0;35m" << "*" << param << "";
   case Mode::Immediate:
-    return out << param;
+    return out << "\x1b[0;33m" << param;
   }
 
   throw std::runtime_error("invalid mode");
@@ -66,7 +66,7 @@ IntCode::operator<<(std::ostream &out,
                     std::pair<const Inst &, const std::array<long, 3> &> p) {
   const auto [inst, params] = p;
 
-  out << inst.operation << " ";
+  out << "  " << inst.operation << " ";
 
   switch (inst.param_size()) {
   case 0:
@@ -76,14 +76,14 @@ IntCode::operator<<(std::ostream &out,
     break;
   case 2:
     print_param(out, params[0], inst.first);
-    out << ", ";
+    out << "\x1b[0;36m, ";
     print_param(out, params[1], inst.second);
     break;
   case 3:
     print_param(out, params[0], inst.first);
-    out << ", ";
+    out << "\x1b[0;36m, ";
     print_param(out, params[1], inst.second);
-    out << ", ";
+    out << "\x1b[0;36m, ";
     print_param(out, params[2], inst.third);
     break;
   }
