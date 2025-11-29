@@ -2,6 +2,9 @@
 #define INTERP_H
 
 #include <cstdint>
+#include <exception>
+#include <ostream>
+#include <utility>
 
 namespace IntCode {
 enum class Operation : long {
@@ -24,6 +27,17 @@ struct Inst {
   Inst(long code);
 
   [[nodiscard]] std::size_t param_size() const;
+};
+
+std::ostream &operator<<(std::ostream &, Operation);
+std::ostream &operator<<(std::ostream &, Mode);
+std::ostream &operator<<(std::ostream &,
+                         std::pair<const Inst &, const std::array<long, 3> &>);
+
+class bad_inst : private std::exception {
+  [[nodiscard]] const char *what() const noexcept override {
+    return "bad instruction";
+  }
 };
 
 } // namespace IntCode

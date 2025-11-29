@@ -1,3 +1,6 @@
+#ifndef INTCODE_H
+#define INTCODE_H
+
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -33,7 +36,10 @@ struct Interp {
   Interp(Program &program, std::unique_ptr<Input>, std::unique_ptr<Output>);
   void run();
   long resolve(long arg, IntCode::Mode mode);
+
+  bool trace;
 };
 
 std::ostream &operator<<(std::ostream &out, const IntCode::Program &prog);
 }; // namespace IntCode
+#endif

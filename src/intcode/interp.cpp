@@ -55,6 +55,11 @@ void Interp::Interp::run() {
       return;
     }
 
+    if (trace) {
+      std::cout << "\x1b[0;36m" << make_pair(inst, params) << "\x1b[0m"
+                << std::endl;
+    }
+
     handler(*this, inst, params);
 
     pc += inst.param_size() + 1;
@@ -76,9 +81,6 @@ long Interp::resolve(long value, Mode mode) {
 void handle_add(Interp &interp, const Inst &inst,
                 const std::array<long, 3> &params) {
   auto [first, second, third] = params;
-#ifdef TRACE_OPS
-  std::cout << std::format("add({}, {}, {})", a, b, res) << std::endl;
-#endif
 
   auto first_value = interp.resolve(first, inst.first);
   auto second_value = interp.resolve(second, inst.second);
@@ -107,6 +109,7 @@ void handle_input(Interp &interp, const Inst &inst,
 void handle_output(Interp &interp, const Inst &inst,
                    const std::array<long, 3> &params) {
   auto [first, second, third] = params;
+  const long addr = interp.resolve(first, inst.first);
 
-  interp.output->write(first);
+  interp.output->write(addr);
 }
