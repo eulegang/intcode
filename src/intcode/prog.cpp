@@ -38,14 +38,15 @@ IntCode::Program::Program(char *filename) : contents{} {
     for (auto ch : line) {
       if (ch == ',') {
         commit();
-      } else if (std::isspace(ch) && valid) {
-        commit();
+      } else if (std::isspace(ch)) {
       } else if ('0' <= ch && ch <= '9') {
         partial *= 10;
         partial += ch - '0';
         valid = true;
       } else if ('-' == ch) {
         neg = true;
+      } else if (';' == ch) {
+        break;
       } else {
         throw std::runtime_error("invalid input given");
       }
