@@ -7,6 +7,8 @@ namespace IntCode {
 enum class Operation : long {
   Add = 1,
   Mult = 2,
+  Input = 3,
+  Output = 4,
   Quit = 99,
 };
 

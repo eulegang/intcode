@@ -7,7 +7,8 @@ using Operation = IntCode::Operation;
 using Mode = IntCode::Mode;
 
 Operation validate_operation(long code) {
-  static std::array<Operation, 3> all{Operation::Add, Operation::Mult,
+  static std::array<Operation, 5> all{Operation::Add, Operation::Mult,
+                                      Operation::Input, Operation::Output,
                                       Operation::Quit};
 
   for (Operation i : all) {
@@ -40,6 +41,9 @@ std::size_t IntCode::Inst::param_size() const {
   case Operation::Add:
   case Operation::Mult:
     return 3;
+  case Operation::Input:
+  case Operation::Output:
+    return 1;
   case Operation::Quit:
     return 0;
   }

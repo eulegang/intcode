@@ -22,6 +22,9 @@ target_link_libraries(day2a PRIVATE intcode)
 add_executable(day2b src/day2/main.b.cpp)
 target_link_libraries(day2b PRIVATE intcode)
 
+add_executable(day5a src/day5/main.a.cpp)
+target_link_libraries(day5a PRIVATE intcode)
+
 # TESTING
 
 file(GLOB TEST_SRC "tests/*.cpp")

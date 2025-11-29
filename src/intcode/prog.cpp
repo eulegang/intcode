@@ -17,41 +17,42 @@ IntCode::Program::Program(char *filename) : contents{} {
 
   bool valid{};
   long partial{};
+  bool neg{};
 
   if (!file.is_open()) {
     throw new std::runtime_error("Invalid file");
   }
+
+  auto commit = [this, &partial, &neg, &valid]() {
+    long value = neg ? -partial : partial;
+
+    contents.push_back(value);
+    partial = 0;
+    valid = false;
+    neg = false;
+  };
 
   while (file) {
     std::getline(file, line);
 
     for (auto ch : line) {
       if (ch == ',') {
-        contents.push_back(partial);
-        valid = false;
-        partial = 0;
-        continue;
-      }
-
-      if (std::isspace(ch) && valid) {
-        contents.push_back(partial);
-        valid = false;
-        partial = 0;
-        continue;
-      }
-
-      if ('0' <= ch && ch <= '9') {
+        commit();
+      } else if (std::isspace(ch) && valid) {
+        commit();
+      } else if ('0' <= ch && ch <= '9') {
         partial *= 10;
         partial += ch - '0';
         valid = true;
-        continue;
+      } else if ('-' == ch) {
+        neg = true;
+      } else {
+        throw std::runtime_error("invalid input given");
       }
-
-      throw std::runtime_error("invalid input given");
     }
 
     if (valid) {
-      contents.push_back(partial);
+      contents.push_back(neg ? -partial : partial);
     }
   }
 }

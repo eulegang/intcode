@@ -1,5 +1,9 @@
 #include <iostream>
+#include <memory>
 #include <vector>
+
+#include "inst.h"
+#include "io.h"
 
 namespace IntCode {
 struct Program {
@@ -22,9 +26,13 @@ struct Program {
 
 struct Interp {
   Program &program;
+  std::unique_ptr<Input> input;
+  std::unique_ptr<Output> output;
 
   Interp(Program &program);
+  Interp(Program &program, std::unique_ptr<Input>, std::unique_ptr<Output>);
   void run();
+  long resolve(long arg, IntCode::Mode mode);
 };
 
 std::ostream &operator<<(std::ostream &out, const IntCode::Program &prog);
