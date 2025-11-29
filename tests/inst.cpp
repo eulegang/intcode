@@ -15,6 +15,16 @@ TEST(Inst, DecodeOperation) {
   }
 
   {
+    Inst inst(3);
+    EXPECT_EQ(inst.operation, Operation::Input);
+  }
+
+  {
+    Inst inst(4);
+    EXPECT_EQ(inst.operation, Operation::Output);
+  }
+
+  {
     Inst inst(99);
     EXPECT_EQ(inst.operation, Operation::Quit);
   }
