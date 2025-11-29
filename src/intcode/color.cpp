@@ -1,6 +1,6 @@
 #include "color.h"
 
-#include <iostream>
+#include <ostream>
 
 namespace Color {
 bool enabled{};
@@ -8,7 +8,6 @@ Clear clear;
 
 std::ostream &enable(std::ostream &os) {
   enabled = true;
-  os << "really enabling " << enabled << std::endl;
   return os;
 }
 
