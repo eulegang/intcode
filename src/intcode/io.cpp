@@ -1,8 +1,10 @@
 
 #include "io.h"
+#include "prog.h"
 
 #include <iostream>
 #include <stdexcept>
+#include <vector>
 
 using namespace IntCode;
 
@@ -17,6 +19,12 @@ RecInput::RecInput(std::initializer_list<long> list) : record{} {
   for (long li : list) {
     record.push_back(li);
   }
+}
+
+RecInput::RecInput(std::string_view line) : record{} {
+  std::vector<long> values;
+  IntCode::read_longs(values, line);
+  record.insert(record.begin(), values.begin(), values.end());
 }
 
 long RecInput::read() {

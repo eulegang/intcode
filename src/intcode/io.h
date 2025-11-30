@@ -3,6 +3,7 @@
 
 #include <deque>
 #include <initializer_list>
+#include <string_view>
 #include <vector>
 
 namespace IntCode {
@@ -22,6 +23,7 @@ struct StdInput : Input {
 
 struct RecInput : Input {
   RecInput(std::initializer_list<long>);
+  RecInput(std::string_view);
   long read() override;
 
 private:

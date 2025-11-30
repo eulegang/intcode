@@ -1,6 +1,7 @@
 #ifndef PROG_H
 #define PROG_H
 
+#include <string_view>
 #include <vector>
 
 namespace IntCode {
@@ -21,6 +22,8 @@ struct Program {
   [[nodiscard]]
   size_t size() const;
 };
+
+void read_longs(std::vector<long> &, std::string_view);
 } // namespace IntCode
 
 #endif
