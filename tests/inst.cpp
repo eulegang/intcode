@@ -1,4 +1,5 @@
-#include "inst.h"
+#include "intcode.h"
+
 #include <gtest/gtest.h>
 
 using namespace IntCode;

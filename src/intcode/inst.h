@@ -1,5 +1,5 @@
-#ifndef INTERP_H
-#define INTERP_H
+#ifndef INST_H
+#define INST_H
 
 #include <cstdint>
 #include <exception>

@@ -1,3 +1,5 @@
+#ifndef IO_H
+#define IO_H
 
 #include <deque>
 #include <initializer_list>
@@ -39,3 +41,5 @@ struct RecOutput : Output {
 };
 
 } // namespace IntCode
+
+#endif

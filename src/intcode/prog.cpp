@@ -1,4 +1,5 @@
-#include "intcode.h"
+#include "prog.h"
+
 #include <cctype>
 #include <fstream>
 #include <iostream>
@@ -65,8 +66,7 @@ long IntCode::Program::get(size_t pos) const {
 
 size_t IntCode::Program::size() const { return contents.size(); }
 
-std::ostream &IntCode::operator<<(std::ostream &out,
-                                  const IntCode::Program &prog) {
+std::ostream &operator<<(std::ostream &out, const IntCode::Program &prog) {
 
   std::cout << "loaded: " << prog.contents.size() << " ints" << std::endl;
 

@@ -1,9 +1,10 @@
+#include "interp.h"
 #include "color.h"
 #include "inst.h"
-#include "intcode.h"
 
 #include <array>
 #include <cctype>
+#include <iostream>
 #include <memory>
 #include <stdexcept>
 
