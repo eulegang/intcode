@@ -5,13 +5,18 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/intcode/)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/color/)
 
 file(GLOB INTCODE_SRC "src/intcode/*.cpp")
 add_library(lib STATIC ${INTCODE_SRC})
 set_target_properties(lib PROPERTIES OUTPUT_NAME "intcode")
 
+file(GLOB COLOR_SRC "src/color/*.cpp")
+add_library(color STATIC ${COLOR_SRC})
+
 add_executable(vm src/run/main.cpp)
 target_link_libraries(vm PRIVATE lib)
+target_link_libraries(vm PRIVATE color)
 set_target_properties(vm PROPERTIES OUTPUT_NAME "intcode")
 
 # TESTING
@@ -35,6 +40,7 @@ target_link_libraries(
   tests
   GTest::gtest_main
   lib
+  color
 )
 
 include(GoogleTest)
