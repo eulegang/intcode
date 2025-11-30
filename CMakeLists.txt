@@ -4,14 +4,7 @@ project(intcode LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(TRACE_OPERATIONS "Adding tracing for operations" OFF)
-
-if(TRACE_OPERATIONS)
-  add_definitions(-DTRACE_OPS)
-endif()
-
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/intcode/)
-
 
 file(GLOB INTCODE_SRC "src/intcode/*.cpp")
 add_library(libintcode STATIC ${INTCODE_SRC})
