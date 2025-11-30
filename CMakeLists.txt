@@ -9,15 +9,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/intcode/)
 file(GLOB INTCODE_SRC "src/intcode/*.cpp")
 add_library(libintcode STATIC ${INTCODE_SRC})
 
-add_executable(day2a src/day2/main.a.cpp)
-target_link_libraries(day2a PRIVATE libintcode)
-
-add_executable(day2b src/day2/main.b.cpp)
-target_link_libraries(day2b PRIVATE libintcode)
-
-add_executable(day5a src/day5/main.a.cpp)
-target_link_libraries(day5a PRIVATE libintcode)
-
 add_executable(intcode src/run/main.cpp)
 target_link_libraries(intcode PRIVATE libintcode)
 
