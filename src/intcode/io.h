@@ -32,8 +32,9 @@ struct StdOutput : Output {
 };
 
 struct RecOutput : Output {
-  RecOutput() = default;
-  std::vector<long> record;
+  std::vector<long> &record;
+
+  RecOutput(std::vector<long> &record);
   void write(long) override;
 };
 

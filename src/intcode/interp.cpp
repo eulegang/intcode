@@ -9,17 +9,35 @@
 
 using namespace IntCode;
 
-using Handler = void(Interp &, const Inst &, const std::array<long, 3> &);
+struct Flags {
+  bool jumped;
+};
 
-Handler handle_add, handle_mult, handle_input, handle_output;
+struct HandlerCall {
+  Interp &interp;
+  size_t &pc;
+  Flags &flags;
+  const Inst &inst;
+  const std::array<long, 3> &params;
+};
+
+using Handler = void(HandlerCall call);
+
+Handler handle_add, handle_mult, handle_input, handle_output, handle_jump_t,
+    handle_jump_f, handle_less_than, handle_equal;
 
 Interp::Interp(Program &program)
     : program{program}, input{std::make_unique<StdInput>()},
-      output{std::make_unique<StdOutput>()} {}
+      output{std::make_unique<StdOutput>()}, trace{false} {}
 
 Interp::Interp(Program &program, std::unique_ptr<Input> input,
                std::unique_ptr<Output> output)
-    : program{program}, input{std::move(input)}, output{std::move(output)} {}
+    : program{program}, input{std::move(input)}, output{std::move(output)},
+      trace{false} {}
+
+bool jump_operation(Operation op) {
+  return op == Operation::JumpTrue || op == Operation::JumpFalse;
+}
 
 void Interp::Interp::run() {
   size_t pc{};
@@ -27,6 +45,9 @@ void Interp::Interp::run() {
   while (true) {
     const Inst inst(program[pc]);
     const size_t len = inst.param_size() + 1;
+    Flags flags = {
+        .jumped = false,
+    };
 
     if (program.size() < pc + len) {
       throw new std::runtime_error("invalid instruction pack");
@@ -52,6 +73,22 @@ void Interp::Interp::run() {
       handler = &handle_output;
       break;
 
+    case Operation::JumpTrue:
+      handler = &handle_jump_t;
+      break;
+
+    case Operation::JumpFalse:
+      handler = &handle_jump_f;
+      break;
+
+    case Operation::LessThan:
+      handler = &handle_less_than;
+      break;
+
+    case Operation::Equals:
+      handler = &handle_equal;
+      break;
+
     case Operation::Quit:
       return;
     }
@@ -61,9 +98,11 @@ void Interp::Interp::run() {
                 << std::endl;
     }
 
-    handler(*this, inst, params);
+    handler({*this, pc, flags, inst, params});
 
-    pc += inst.param_size() + 1;
+    if (!flags.jumped) {
+      pc += inst.param_size() + 1;
+    }
   }
 }
 
@@ -79,38 +118,78 @@ long Interp::resolve(long value, Mode mode) {
   }
 }
 
-void handle_add(Interp &interp, const Inst &inst,
-                const std::array<long, 3> &params) {
-  auto [first, second, third] = params;
+void handle_add(HandlerCall call) {
+  auto [first, second, third] = call.params;
 
-  auto first_value = interp.resolve(first, inst.first);
-  auto second_value = interp.resolve(second, inst.second);
+  auto first_value = call.interp.resolve(first, call.inst.first);
+  auto second_value = call.interp.resolve(second, call.inst.second);
 
-  interp.program[third] = first_value + second_value;
+  call.interp.program[third] = first_value + second_value;
 }
 
-void handle_mult(Interp &interp, const Inst &inst,
-                 const std::array<long, 3> &params) {
-  auto [first, second, third] = params;
-  auto first_value = interp.resolve(first, inst.first);
-  auto second_value = interp.resolve(second, inst.second);
+void handle_mult(HandlerCall call) {
+  auto [first, second, third] = call.params;
+  auto first_value = call.interp.resolve(first, call.inst.first);
+  auto second_value = call.interp.resolve(second, call.inst.second);
 
-  interp.program[third] = first_value * second_value;
+  call.interp.program[third] = first_value * second_value;
 }
 
-void handle_input(Interp &interp, const Inst &inst,
-                  const std::array<long, 3> &params) {
-  auto [first, second, third] = params;
+void handle_input(HandlerCall call) {
+  auto [first, second, third] = call.params;
 
-  const long in_value = interp.input->read();
+  const long in_value = call.interp.input->read();
 
-  interp.program[first] = in_value;
+  call.interp.program[first] = in_value;
 }
 
-void handle_output(Interp &interp, const Inst &inst,
-                   const std::array<long, 3> &params) {
-  auto [first, second, third] = params;
-  const long addr = interp.resolve(first, inst.first);
+void handle_output(HandlerCall call) {
+  auto [first, second, third] = call.params;
+  const long addr = call.interp.resolve(first, call.inst.first);
 
-  interp.output->write(addr);
+  call.interp.output->write(addr);
+}
+
+void handle_jump_t(HandlerCall call) {
+  auto [first, second, third] = call.params;
+  const long test = call.interp.resolve(first, call.inst.first);
+  const long loc = call.interp.resolve(second, call.inst.second);
+
+  if (test) {
+    call.pc = loc;
+    call.flags.jumped = true;
+  }
+}
+
+void handle_jump_f(HandlerCall call) {
+  auto [first, second, third] = call.params;
+  const long test = call.interp.resolve(first, call.inst.first);
+  const long loc = call.interp.resolve(second, call.inst.second);
+
+  if (!test) {
+    call.pc = loc;
+    call.flags.jumped = true;
+  }
+}
+
+void handle_less_than(HandlerCall call) {
+  auto [first, second, third] = call.params;
+  const long a = call.interp.resolve(first, call.inst.first);
+  const long b = call.interp.resolve(second, call.inst.second);
+  const long res = third;
+
+  call.interp.program[res] = a < b ? 1 : 0;
+}
+
+void handle_equal(HandlerCall call) {
+  auto [first, second, third] = call.params;
+  const long a = call.interp.resolve(first, call.inst.first);
+  const long b = call.interp.resolve(second, call.inst.second);
+  const long res = third;
+
+  std::cout << "eql " << a << ", " << b << ", " << res << std::endl;
+
+  call.interp.program[res] = a == b ? 1 : 0;
+
+  std::cout << "result " << call.interp.program[res] << std::endl;
 }

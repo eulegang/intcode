@@ -7,8 +7,10 @@
 using namespace IntCode;
 
 Operation validate_operation(long code) {
-  static std::array all{Operation::Add, Operation::Mult, Operation::Input,
-                        Operation::Output, Operation::Quit};
+  static std::array all{
+      Operation::Add,      Operation::Mult,     Operation::Input,
+      Operation::Output,   Operation::JumpTrue, Operation::JumpFalse,
+      Operation::LessThan, Operation::Equals,   Operation::Quit};
 
   for (Operation i : all) {
     if (static_cast<long>(i) == code)
@@ -39,10 +41,18 @@ std::size_t IntCode::Inst::param_size() const {
   switch (this->operation) {
   case Operation::Add:
   case Operation::Mult:
+  case Operation::LessThan:
+  case Operation::Equals:
     return 3;
+
+  case Operation::JumpTrue:
+  case Operation::JumpFalse:
+    return 2;
+
   case Operation::Input:
   case Operation::Output:
     return 1;
+
   case Operation::Quit:
     return 0;
   }
@@ -101,6 +111,16 @@ std::ostream &IntCode::operator<<(std::ostream &out, Operation op) {
     return out << "input";
   case Operation::Output:
     return out << "output";
+
+  case Operation::JumpTrue:
+    return out << "jmp_t";
+  case Operation::JumpFalse:
+    return out << "jmp_f";
+  case Operation::LessThan:
+    return out << "less_than";
+  case Operation::Equals:
+    return out << "eql";
+
   case Operation::Quit:
     return out << "quit";
   }

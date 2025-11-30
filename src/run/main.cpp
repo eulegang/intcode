@@ -38,7 +38,6 @@ int main(int argc, char *argv[]) {
   }
 
   if (!no_color) {
-    std::cout << "enabling";
     std::cout << Color::enable;
   }
 
