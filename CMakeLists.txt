@@ -7,10 +7,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/intcode/)
 
 file(GLOB INTCODE_SRC "src/intcode/*.cpp")
-add_library(libintcode STATIC ${INTCODE_SRC})
+add_library(lib STATIC ${INTCODE_SRC})
+set_target_properties(lib PROPERTIES OUTPUT_NAME "intcode")
 
-add_executable(intcode src/run/main.cpp)
-target_link_libraries(intcode PRIVATE libintcode)
+add_executable(vm src/run/main.cpp)
+target_link_libraries(vm PRIVATE lib)
+set_target_properties(vm PROPERTIES OUTPUT_NAME "intcode")
 
 # TESTING
 
@@ -32,7 +34,7 @@ add_executable(
 target_link_libraries(
   tests
   GTest::gtest_main
-  libintcode
+  lib
 )
 
 include(GoogleTest)
