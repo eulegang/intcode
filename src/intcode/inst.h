@@ -17,6 +17,7 @@ enum class Operation : long {
   JumpFalse = 6,
   LessThan = 7,
   Equals = 8,
+  AdjustRel = 9,
 
   Quit = 99,
 };
@@ -24,6 +25,7 @@ enum class Operation : long {
 enum class Mode : uint8_t {
   Position = 0,
   Immediate = 1,
+  Relative = 2,
 };
 
 struct Inst {

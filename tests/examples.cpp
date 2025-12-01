@@ -45,3 +45,20 @@ TEST(IntCode, Day5Examples) {
     ASSERT_EQ(output, std::vector<long>{0});
   }
 }
+
+TEST(IntCode, Day9Examples) {
+
+  {
+    Program prog{{109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006,
+                  101, 0, 99}};
+    std::vector<long> output{};
+
+    Interp interp(prog, std::make_unique<RecInput>(),
+                  std::make_unique<RecOutput>(output));
+    interp.run();
+    std::vector<long> expected{109,  1,   204, -1,  1001, 100, 1, 100,
+                               1008, 100, 16,  101, 1006, 101, 0, 99};
+
+    ASSERT_EQ(output, expected);
+  }
+}

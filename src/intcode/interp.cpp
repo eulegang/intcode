@@ -17,12 +17,25 @@ struct Flags {
 struct HandlerCall {
   Interp &interp;
   size_t &pc;
+  size_t &rel_base;
   Flags &flags;
   const Inst &inst;
   const std::array<long, 3> &params;
 
   template <unsigned int offset> long resolve() {
-    return interp.resolve(params[offset], inst.modes[offset]);
+    auto mode = inst.modes[offset];
+
+    switch (mode) {
+    case Mode::Position:
+      return interp.program[params[offset]];
+    case Mode::Relative:
+      return interp.program[params[offset] + rel_base];
+    case Mode::Immediate:
+      return params[offset];
+
+    default:
+      throw new std::runtime_error("invalid mode");
+    }
   }
 
   long first() { return resolve<0>(); }
@@ -33,7 +46,7 @@ struct HandlerCall {
 using Handler = void(HandlerCall call);
 
 Handler handle_add, handle_mult, handle_input, handle_output, handle_jump_t,
-    handle_jump_f, handle_less_than, handle_equal;
+    handle_jump_f, handle_less_than, handle_equal, handle_adjust_rel;
 
 Interp::Interp(Program &program)
     : program{program}, input{std::make_unique<StdInput>()},
@@ -50,6 +63,7 @@ bool jump_operation(Operation op) {
 
 void Interp::Interp::run() {
   size_t pc{};
+  size_t rel_base{};
 
   while (true) {
     const Inst inst(program[pc]);
@@ -98,6 +112,10 @@ void Interp::Interp::run() {
       handler = &handle_equal;
       break;
 
+    case Operation::AdjustRel:
+      handler = &handle_adjust_rel;
+      break;
+
     case Operation::Quit:
       return;
     }
@@ -107,7 +125,7 @@ void Interp::Interp::run() {
                 << std::endl;
     }
 
-    handler({*this, pc, flags, inst, params});
+    handler({*this, pc, rel_base, flags, inst, params});
 
     if (!flags.jumped) {
       pc += inst.param_size() + 1;
@@ -185,4 +203,10 @@ void handle_equal(HandlerCall call) {
   const long res = call.params[2];
 
   call.interp.program[res] = a == b ? 1 : 0;
+}
+
+void handle_adjust_rel(HandlerCall call) {
+  const long a = call.first();
+
+  call.rel_base += a;
 }

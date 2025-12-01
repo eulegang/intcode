@@ -15,6 +15,8 @@ long StdInput::read() {
   return res;
 }
 
+RecInput::RecInput() : record{} {}
+
 RecInput::RecInput(std::initializer_list<long> list) : record{} {
   for (long li : list) {
     record.push_back(li);

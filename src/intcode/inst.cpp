@@ -7,10 +7,11 @@
 using namespace IntCode;
 
 Operation validate_operation(long code) {
-  static std::array all{
-      Operation::Add,      Operation::Mult,     Operation::Input,
-      Operation::Output,   Operation::JumpTrue, Operation::JumpFalse,
-      Operation::LessThan, Operation::Equals,   Operation::Quit};
+  static std::array all{Operation::Add,       Operation::Mult,
+                        Operation::Input,     Operation::Output,
+                        Operation::JumpTrue,  Operation::JumpFalse,
+                        Operation::LessThan,  Operation::Equals,
+                        Operation::AdjustRel, Operation::Quit};
 
   for (Operation i : all) {
     if (static_cast<long>(i) == code)
@@ -21,7 +22,7 @@ Operation validate_operation(long code) {
 }
 
 Mode validate_mode(long code) {
-  static std::array all{Mode::Position, Mode::Immediate};
+  static std::array all{Mode::Position, Mode::Immediate, Mode::Relative};
 
   for (Mode i : all) {
     if (static_cast<long>(i) == code)
@@ -52,6 +53,7 @@ std::size_t IntCode::Inst::param_size() const {
 
   case Operation::Input:
   case Operation::Output:
+  case Operation::AdjustRel:
     return 1;
 
   case Operation::Quit:
@@ -64,7 +66,9 @@ std::size_t IntCode::Inst::param_size() const {
 std::ostream &print_param(std::ostream &out, long param, Mode mode) {
   switch (mode) {
   case Mode::Position:
-    return out << Color::purple << "*" << param << "";
+    return out << Color::purple << "*" << param;
+  case Mode::Relative:
+    return out << Color::red << "~" << param;
   case Mode::Immediate:
     return out << Color::yellow << param;
   }
@@ -122,6 +126,9 @@ std::ostream &IntCode::operator<<(std::ostream &out, Operation op) {
   case Operation::Equals:
     return out << "eql";
 
+  case Operation::AdjustRel:
+    return out << "adjust_rel";
+
   case Operation::Quit:
     return out << "quit";
   }
@@ -133,6 +140,8 @@ std::ostream &IntCode::operator<<(std::ostream &out, Mode mode) {
   switch (mode) {
   case Mode::Position:
     return out << "position";
+  case Mode::Relative:
+    return out << "relative";
   case Mode::Immediate:
     return out << "immediate";
   }

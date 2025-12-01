@@ -22,6 +22,7 @@ struct StdInput : Input {
 };
 
 struct RecInput : Input {
+  RecInput();
   RecInput(std::initializer_list<long>);
   RecInput(std::string_view);
   long read() override;
