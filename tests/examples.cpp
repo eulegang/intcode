@@ -61,4 +61,28 @@ TEST(IntCode, Day9Examples) {
 
     ASSERT_EQ(output, expected);
   }
+
+  {
+
+    Program prog{{1102, 34915192, 34915192, 7, 4, 7, 99, 0}};
+    std::vector<long> output{};
+
+    Interp interp(prog, std::make_unique<RecInput>(),
+                  std::make_unique<RecOutput>(output));
+    interp.run();
+    std::vector<long> expected{1219070632396864};
+    ASSERT_EQ(output, expected);
+  }
+
+  {
+
+    Program prog{{104, 1125899906842624, 99}};
+    std::vector<long> output{};
+
+    Interp interp(prog, std::make_unique<RecInput>(),
+                  std::make_unique<RecOutput>(output));
+    interp.run();
+    std::vector<long> expected{1125899906842624};
+    ASSERT_EQ(output, expected);
+  }
 }

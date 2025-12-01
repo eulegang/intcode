@@ -42,8 +42,4 @@ long RecInput::read() {
 void StdOutput::write(long num) { std::cout << "<< " << num << std::endl; }
 
 RecOutput::RecOutput(std::vector<long> &record) : record{record} {}
-void RecOutput::write(long num) {
-  std::cout << "writing " << num << std::endl;
-
-  record.push_back(num);
-}
+void RecOutput::write(long num) { record.push_back(num); }

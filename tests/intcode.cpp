@@ -28,3 +28,10 @@ TEST(IntCode, run) {
 
   ASSERT_EQ(interp.program[0], 3500);
 }
+
+TEST(IntCode, Extend) {
+  IntCode::Program prog{{1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50}};
+  ASSERT_EQ(prog.contents.size(), 12);
+  ASSERT_EQ(prog[49], 0);
+  ASSERT_EQ(prog.contents.size(), 50);
+}

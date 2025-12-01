@@ -28,7 +28,13 @@ Program::Program(char *filename) : contents{} {
   }
 }
 
-long &Program::operator[](size_t pos) { return contents[pos]; }
+long &Program::operator[](size_t pos) {
+  if (pos >= contents.size()) {
+    contents.resize(pos + 1, 0);
+  }
+
+  return contents[pos];
+}
 long Program::get(size_t pos) const {
   return pos < contents.size() ? contents[pos] : 0;
 }
