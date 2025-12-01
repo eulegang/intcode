@@ -19,6 +19,9 @@ target_link_libraries(vm PRIVATE lib)
 target_link_libraries(vm PRIVATE color)
 set_target_properties(vm PROPERTIES OUTPUT_NAME "intcode")
 
+add_executable(slice src/run/slice.cpp)
+target_link_libraries(slice PRIVATE lib)
+
 # TESTING
 
 file(GLOB TEST_SRC "tests/*.cpp")
