@@ -44,9 +44,7 @@ struct HandlerCall {
 };
 
 using Handler = void(HandlerCall call);
-
-Handler handle_add, handle_mult, handle_input, handle_output, handle_jump_t,
-    handle_jump_f, handle_less_than, handle_equal, handle_adjust_rel;
+Handler *resolve_operation(Operation);
 
 Interp::Interp(Program &program)
     : program{program}, input{std::make_unique<StdInput>()},
@@ -76,47 +74,10 @@ void Interp::Interp::run() {
       throw new std::runtime_error("invalid instruction pack");
     }
 
-    Handler *handler;
     const std::array<long, 3> params{program.get(pc + 1), program.get(pc + 2),
                                      program.get(pc + 3)};
-    switch (inst.operation) {
-    case Operation::Add:
-      handler = &handle_add;
-      break;
 
-    case Operation::Mult:
-      handler = &handle_mult;
-      break;
-
-    case Operation::Input:
-      handler = &handle_input;
-      break;
-
-    case Operation::Output:
-      handler = &handle_output;
-      break;
-
-    case Operation::JumpTrue:
-      handler = &handle_jump_t;
-      break;
-
-    case Operation::JumpFalse:
-      handler = &handle_jump_f;
-      break;
-
-    case Operation::LessThan:
-      handler = &handle_less_than;
-      break;
-
-    case Operation::Equals:
-      handler = &handle_equal;
-      break;
-
-    case Operation::AdjustRel:
-      handler = &handle_adjust_rel;
-      break;
-
-    case Operation::Quit:
+    if (inst.operation == Operation::Quit) {
       return;
     }
 
@@ -125,7 +86,8 @@ void Interp::Interp::run() {
                 << std::endl;
     }
 
-    handler({*this, pc, rel_base, flags, inst, params});
+    resolve_operation(inst.operation)(
+        {*this, pc, rel_base, flags, inst, params});
 
     if (!flags.jumped) {
       pc += inst.param_size() + 1;
@@ -209,4 +171,20 @@ void handle_adjust_rel(HandlerCall call) {
   const long a = call.first();
 
   call.rel_base += a;
+}
+
+static const std::array HANDLERS{
+    handle_add,       handle_mult,   handle_input,
+    handle_output,    handle_jump_t, handle_jump_f,
+    handle_less_than, handle_equal,  handle_adjust_rel,
+};
+
+Handler *resolve_operation(Operation op) {
+  long idx = static_cast<long>(op) - 1;
+
+  if (idx < HANDLERS.size()) {
+    return HANDLERS[idx];
+  } else {
+    throw std::runtime_error("invalid index used");
+  }
 }
