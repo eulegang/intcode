@@ -20,6 +20,14 @@ struct HandlerCall {
   Flags &flags;
   const Inst &inst;
   const std::array<long, 3> &params;
+
+  template <unsigned int offset> long resolve() {
+    return interp.resolve(params[offset], inst.modes[offset]);
+  }
+
+  long first() { return resolve<0>(); }
+  long second() { return resolve<1>(); }
+  long third() { return resolve<2>(); }
 };
 
 using Handler = void(HandlerCall call);
@@ -120,41 +128,32 @@ long Interp::resolve(long value, Mode mode) {
 }
 
 void handle_add(HandlerCall call) {
-  auto [first, second, third] = call.params;
+  auto ret = call.params[2];
 
-  auto first_value = call.interp.resolve(first, call.inst.first);
-  auto second_value = call.interp.resolve(second, call.inst.second);
-
-  call.interp.program[third] = first_value + second_value;
+  call.interp.program[ret] = call.first() + call.second();
 }
 
 void handle_mult(HandlerCall call) {
-  auto [first, second, third] = call.params;
-  auto first_value = call.interp.resolve(first, call.inst.first);
-  auto second_value = call.interp.resolve(second, call.inst.second);
+  auto ret = call.params[2];
 
-  call.interp.program[third] = first_value * second_value;
+  call.interp.program[ret] = call.first() * call.second();
 }
 
 void handle_input(HandlerCall call) {
-  auto [first, second, third] = call.params;
-
   const long in_value = call.interp.input->read();
 
-  call.interp.program[first] = in_value;
+  call.interp.program[call.params[0]] = in_value;
 }
 
 void handle_output(HandlerCall call) {
-  auto [first, second, third] = call.params;
-  const long addr = call.interp.resolve(first, call.inst.first);
+  const long addr = call.first();
 
   call.interp.output->write(addr);
 }
 
 void handle_jump_t(HandlerCall call) {
-  auto [first, second, third] = call.params;
-  const long test = call.interp.resolve(first, call.inst.first);
-  const long loc = call.interp.resolve(second, call.inst.second);
+  const long test = call.first();
+  const long loc = call.second();
 
   if (test) {
     call.pc = loc;
@@ -163,9 +162,8 @@ void handle_jump_t(HandlerCall call) {
 }
 
 void handle_jump_f(HandlerCall call) {
-  auto [first, second, third] = call.params;
-  const long test = call.interp.resolve(first, call.inst.first);
-  const long loc = call.interp.resolve(second, call.inst.second);
+  const long test = call.first();
+  const long loc = call.second();
 
   if (!test) {
     call.pc = loc;
@@ -174,23 +172,17 @@ void handle_jump_f(HandlerCall call) {
 }
 
 void handle_less_than(HandlerCall call) {
-  auto [first, second, third] = call.params;
-  const long a = call.interp.resolve(first, call.inst.first);
-  const long b = call.interp.resolve(second, call.inst.second);
-  const long res = third;
+  const long a = call.first();
+  const long b = call.second();
+  const long res = call.params[2];
 
   call.interp.program[res] = a < b ? 1 : 0;
 }
 
 void handle_equal(HandlerCall call) {
-  auto [first, second, third] = call.params;
-  const long a = call.interp.resolve(first, call.inst.first);
-  const long b = call.interp.resolve(second, call.inst.second);
-  const long res = third;
-
-  std::cout << "eql " << a << ", " << b << ", " << res << std::endl;
+  const long a = call.first();
+  const long b = call.second();
+  const long res = call.params[2];
 
   call.interp.program[res] = a == b ? 1 : 0;
-
-  std::cout << "result " << call.interp.program[res] << std::endl;
 }

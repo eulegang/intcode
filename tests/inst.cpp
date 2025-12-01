@@ -38,22 +38,22 @@ TEST(Inst, DecodeOperation) {
 TEST(Inst, DecodeMode) {
   {
     Inst inst(11101);
-    EXPECT_EQ(inst.first, Mode::Immediate);
-    EXPECT_EQ(inst.second, Mode::Immediate);
-    EXPECT_EQ(inst.third, Mode::Immediate);
+    EXPECT_EQ(inst.modes[0], Mode::Immediate);
+    EXPECT_EQ(inst.modes[1], Mode::Immediate);
+    EXPECT_EQ(inst.modes[2], Mode::Immediate);
   }
 
   {
     Inst inst(1);
-    EXPECT_EQ(inst.first, Mode::Position);
-    EXPECT_EQ(inst.second, Mode::Position);
-    EXPECT_EQ(inst.third, Mode::Position);
+    EXPECT_EQ(inst.modes[0], Mode::Position);
+    EXPECT_EQ(inst.modes[1], Mode::Position);
+    EXPECT_EQ(inst.modes[2], Mode::Position);
   }
 
   {
     Inst inst(11001);
-    EXPECT_EQ(inst.first, Mode::Position);
-    EXPECT_EQ(inst.second, Mode::Immediate);
-    EXPECT_EQ(inst.third, Mode::Immediate);
+    EXPECT_EQ(inst.modes[0], Mode::Position);
+    EXPECT_EQ(inst.modes[1], Mode::Immediate);
+    EXPECT_EQ(inst.modes[2], Mode::Immediate);
   }
 }

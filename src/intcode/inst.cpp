@@ -32,10 +32,11 @@ Mode validate_mode(long code) {
 }
 
 IntCode::Inst::Inst(long code)
-    : operation{validate_operation(code % 100)},
-      first{validate_mode((code / 100) % 10)},
-      second{validate_mode((code / 1000) % 10)},
-      third{validate_mode((code / 10000) % 10)} {}
+    : operation{validate_operation(code % 100)}, modes{} {
+  modes[0] = validate_mode((code / 100) % 10);
+  modes[1] = validate_mode((code / 1000) % 10);
+  modes[2] = validate_mode((code / 10000) % 10);
+}
 
 std::size_t IntCode::Inst::param_size() const {
   switch (this->operation) {
@@ -82,19 +83,19 @@ IntCode::operator<<(std::ostream &out,
   case 0:
     break;
   case 1:
-    print_param(out, params[0], inst.first);
+    print_param(out, params[0], inst.modes[0]);
     break;
   case 2:
-    print_param(out, params[0], inst.first);
+    print_param(out, params[0], inst.modes[0]);
     out << Color::cyan << ", ";
-    print_param(out, params[1], inst.second);
+    print_param(out, params[1], inst.modes[1]);
     break;
   case 3:
-    print_param(out, params[0], inst.first);
+    print_param(out, params[0], inst.modes[0]);
     out << Color::cyan << ", ";
-    print_param(out, params[1], inst.second);
+    print_param(out, params[1], inst.modes[1]);
     out << Color::cyan << ", ";
-    print_param(out, params[2], inst.third);
+    print_param(out, params[2], inst.modes[2]);
     break;
   }
 

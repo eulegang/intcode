@@ -1,6 +1,7 @@
 #ifndef INST_H
 #define INST_H
 
+#include <array>
 #include <cstdint>
 #include <exception>
 #include <ostream>
@@ -27,7 +28,7 @@ enum class Mode : uint8_t {
 
 struct Inst {
   Operation operation;
-  Mode first, second, third;
+  std::array<Mode, 3> modes;
 
   Inst(long code);
 
