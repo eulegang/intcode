@@ -26,8 +26,16 @@ enum Basic : uint8_t {
 extern struct Clear {
 } clear;
 
-std::ostream &operator<<(std::ostream &, Basic);
+struct Hex {
+  int red;
+  int green;
+  int blue;
 
+  Hex(int);
+};
+
+std::ostream &operator<<(std::ostream &, Basic);
+std::ostream &operator<<(std::ostream &, Hex);
 std::ostream &operator<<(std::ostream &, Clear);
 
 } // namespace Color

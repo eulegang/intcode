@@ -1,6 +1,6 @@
 #include "color.h"
 
-#include <ostream>
+#include <iostream>
 
 namespace Color {
 bool enabled{};
@@ -16,9 +16,24 @@ std::ostream &disable(std::ostream &os) {
   return os;
 }
 
+Hex::Hex(int code)
+    : red{(code >> 16) & 0xFF}, green{(code >> 8) & 0xFF}, blue{(code) & 0xFF}
+
+{}
+
 std::ostream &operator<<(std::ostream &os, Basic basic) {
   if (enabled) {
     os << "\x1b[0;3" << static_cast<int>(basic) << "m";
+  }
+
+  return os;
+}
+
+std::ostream &operator<<(std::ostream &os, Hex hex) {
+  if (enabled) {
+    os << "\x1b[38;2;" << static_cast<int>(hex.red) << ";"
+       << static_cast<int>(hex.green) << ";" << static_cast<int>(hex.blue)
+       << "m";
   }
 
   return os;
